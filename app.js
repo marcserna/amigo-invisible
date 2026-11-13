@@ -10,6 +10,7 @@ const participants = {
   ivan: "ivan@amigo-invisible.test",
   nikola: "nikola@amigo-invisible.test",
   aoxin: "aoxin@amigo-invisible.test",
+  cai: "cai@amigo-invisible.test",
 };
 
 const config = window.APP_CONFIG;

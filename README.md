@@ -1,6 +1,6 @@
 # Amigo invisible
 
-Web sencilla para Marc, Ernest, Carla, Noe, Jonay, Oriol, Ivan, Nikola y Aoxin. Se publica como sitio estático en GitHub Pages; Supabase gestiona las contraseñas y guarda el sorteo y las listas con acceso restringido.
+Web sencilla para Marc, Ernest, Carla, Noe, Jonay, Oriol, Ivan, Nikola, Aoxin y Cai. Se publica como sitio estático en GitHub Pages; Supabase gestiona las contraseñas y guarda el sorteo y las listas con acceso restringido.
 
 ## Preparación
 
@@ -8,7 +8,7 @@ Web sencilla para Marc, Ernest, Carla, Noe, Jonay, Oriol, Ivan, Nikola y Aoxin. 
 
 1. Crea un proyecto en [Supabase](https://supabase.com/).
 2. En **Authentication → Providers → Email**, deja activo el acceso con contraseña y desactiva el registro público de usuarios.
-3. En **Authentication → Users**, crea los nueve usuarios. Usa **Auto Confirm User** y asigna una contraseña distinta a cada persona. No hace falta que sean direcciones de correo reales; la web solo las usa como identificadores de acceso:
+3. En **Authentication → Users**, crea los diez usuarios. Usa **Auto Confirm User** y asigna una contraseña distinta a cada persona. No hace falta que sean direcciones de correo reales; la web solo las usa como identificadores de acceso:
 
    | Persona | Email de acceso |
    | --- | --- |
@@ -21,28 +21,31 @@ Web sencilla para Marc, Ernest, Carla, Noe, Jonay, Oriol, Ivan, Nikola y Aoxin. 
    | Ivan | `ivan@amigo-invisible.test` |
    | Nikola | `nikola@amigo-invisible.test` |
    | Aoxin | `aoxin@amigo-invisible.test` |
+   | Cai | `cai@amigo-invisible.test` |
 
    Apunta las contraseñas y compártelas en privado. Al no ser correos reales, la recuperación de contraseña por email no estará disponible; quien administre el proyecto podrá cambiar una desde Supabase.
 
 ### 2. Crear las tablas y hacer el sorteo
 
 1. Abre **SQL Editor → New query** en Supabase.
-2. Copia el contenido completo de [`setup.sql`](./setup.sql) y ejecútalo una sola vez, después de crear los nueve usuarios.
-3. El script crea las tablas y políticas de acceso, registra a los participantes y asigna al azar una persona a cada uno. Nadie se asigna a sí mismo y cada persona sale una sola vez.
+2. Copia el contenido completo de [`setup.sql`](./setup.sql) y ejecútalo una sola vez, después de crear los diez usuarios.
+3. El script crea las tablas y políticas de acceso, registra a los participantes y sortea entre las asignaciones permitidas. Nadie se asigna a sí mismo y cada persona sale una sola vez.
 4. No vuelvas a ejecutar el script completo: incluye la creación inicial del sorteo.
 
 Las políticas de seguridad permiten que cada participante vea su propia asignación y las listas de deseos de sí mismo y de su persona asignada. Solo puede añadir o quitar ideas de su propia lista.
 
-### Si ya ejecutaste el sorteo inicial de cuatro personas
+### Si ya tienes el sorteo de nueve y vas a añadir a Cai
 
-Como en este proyecto ya se hizo el primer sorteo, **no vuelvas a ejecutar `setup.sql`**. Para pasar al grupo de nueve:
+En este proyecto ya existe el sorteo de nueve. **No vuelvas a ejecutar `setup.sql` ni `add_participants_and_redraw.sql`**. Para añadir a Cai:
 
-1. En **Authentication → Users**, crea solo las cinco cuentas nuevas (Jonay, Oriol, Ivan, Nikola y Aoxin) con los correos de la tabla anterior.
-2. Abre **SQL Editor → New query** y ejecuta [`add_participants_and_redraw.sql`](./add_participants_and_redraw.sql) una sola vez.
-3. La migración comprueba que están las nueve cuentas antes de cambiar nada, conserva las listas de deseos y vuelve a sortear a todo el grupo. Las asignaciones actuales cambiarán.
+1. En **Authentication → Users**, crea la cuenta `cai@amigo-invisible.test`.
+2. Abre **SQL Editor → New query** y ejecuta [`add_cai_and_redraw.sql`](./add_cai_and_redraw.sql) una sola vez.
+3. La migración conserva las listas de deseos y vuelve a sortear al grupo de diez. Las asignaciones actuales cambiarán.
 4. No ejecutes de nuevo esta migración: está protegida para rechazar una segunda ejecución.
 
-Las reglas iniciales son: máximo 30 €, no regalar Funkos ni 30 grapadoras (una roja), mantener el sorteo en secreto y usar las listas de deseos como inspiración.
+Si en el futuro quieres volver a sortear a los diez sin modificar las cuentas ni las listas de deseos, ejecuta [`redraw.sql`](./redraw.sql) en una nueva consulta del SQL Editor. Cada vez que lo ejecutes se cambiarán todas las asignaciones.
+
+Las reglas iniciales son: máximo 15 €, no regalar Funkos ni 30 grapadoras (una roja), mantener el sorteo en secreto y usar las listas de deseos como inspiración. El sorteo evita las parejas Marc-Carla, Ernest-Noe, Ivan-Nikola y Aoxin-Cai en ambos sentidos, y fija Marc → Noe.
 
 ### 3. Conectar la web
 
