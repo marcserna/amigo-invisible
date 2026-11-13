@@ -546,6 +546,61 @@ h1,
   color: #526357;
 }
 
+.public-rules {
+  margin: 0 6% 54px;
+  padding: 25px 29px;
+}
+
+.public-rules h2 {
+  margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 26px;
+}
+
+.rules-list {
+  display: grid;
+  gap: 9px;
+  margin: 16px 0 0;
+  padding-left: 20px;
+  color: #68756c;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.rules-list li::marker {
+  color: var(--orange);
+}
+
+.rules-dropdown {
+  margin-top: 19px;
+  padding: 0 17px 14px;
+  border: 1px solid rgba(38, 61, 54, 0.08);
+  border-radius: 5px;
+  background: rgba(255, 254, 250, 0.6);
+  color: #526357;
+  font-size: 12px;
+}
+
+.rules-dropdown summary {
+  padding: 14px 0 0;
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+}
+
+.rules-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.rules-dropdown summary span {
+  margin-right: 8px;
+  color: var(--orange);
+}
+
+.rules-dropdown .rules-list {
+  margin-top: 12px;
+}
+
 .site-footer {
   min-height: 62px;
   border-top: 1px solid rgba(38, 61, 54, 0.1);
@@ -581,6 +636,11 @@ h1,
     grid-template-columns: 1fr;
     gap: 32px;
     padding: 54px 0 60px;
+  }
+
+  .public-rules {
+    margin: 0 0 42px;
+    padding: 22px;
   }
 
   .welcome-copy h1 {

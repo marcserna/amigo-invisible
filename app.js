@@ -5,6 +5,11 @@ const participants = {
   ernest: "ernest@amigo-invisible.test",
   carla: "carla@amigo-invisible.test",
   noe: "noe@amigo-invisible.test",
+  jonay: "jonay@amigo-invisible.test",
+  oriol: "oriol@amigo-invisible.test",
+  ivan: "ivan@amigo-invisible.test",
+  nikola: "nikola@amigo-invisible.test",
+  aoxin: "aoxin@amigo-invisible.test",
 };
 
 const config = window.APP_CONFIG;

@@ -52,6 +52,11 @@
               <option value="ernest">Ernest</option>
               <option value="carla">Carla</option>
               <option value="noe">Noe</option>
+              <option value="jonay">Jonay</option>
+              <option value="oriol">Oriol</option>
+              <option value="ivan">Ivan</option>
+              <option value="nikola">Nikola</option>
+              <option value="aoxin">Aoxin</option>
             </select>
             <span class="select-arrow" aria-hidden="true">⌄</span>
           </div>
@@ -70,6 +75,18 @@
           <p id="login-message" class="message" role="status" aria-live="polite"></p>
           <p class="login-footnote">Cada persona tiene su propia contraseña.</p>
         </form>
+      </section>
+
+      <section class="public-rules card" aria-labelledby="public-rules-title">
+        <p class="card-kicker">PARA QUE TODO SALGA BIEN</p>
+        <h2 id="public-rules-title">Las reglas del regalo</h2>
+        <ul class="rules-list">
+          <li>El regalo no debe superar los 30 €.</li>
+          <li>No se pueden regalar Funkos.</li>
+          <li>No se pueden regalar 30 grapadoras (una roja).</li>
+          <li>Mantenemos en secreto a quién nos ha tocado.</li>
+          <li>La lista de deseos sirve de inspiración.</li>
+        </ul>
       </section>
 
       <section id="app-view" class="app-view hidden" aria-labelledby="app-title">
@@ -128,10 +145,16 @@
           </article>
         </div>
 
-        <aside class="rules-note">
-          <span aria-hidden="true">✦</span>
-          <p><strong>Las reglas del secreto:</strong> no cuentes a quién te ha tocado y añade tus ideas cuando quieras.</p>
-        </aside>
+        <details class="rules-dropdown">
+          <summary><span aria-hidden="true">✦</span> Las reglas del regalo</summary>
+          <ul class="rules-list">
+            <li>El regalo no debe superar los 30 €.</li>
+            <li>No se pueden regalar Funkos.</li>
+            <li>No se pueden regalar 30 grapadoras (una roja).</li>
+            <li>Mantenemos en secreto a quién nos ha tocado.</li>
+            <li>La lista de deseos sirve de inspiración.</li>
+          </ul>
+        </details>
       </section>
 
       <footer class="site-footer">

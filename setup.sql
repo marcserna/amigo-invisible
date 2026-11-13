@@ -2,7 +2,9 @@ create extension if not exists pgcrypto;
 
 create table public.participants (
   id uuid primary key default gen_random_uuid(),
-  username text not null unique check (username in ('marc', 'ernest', 'carla', 'noe')),
+  username text not null unique check (
+    username in ('marc', 'ernest', 'carla', 'noe', 'jonay', 'oriol', 'ivan', 'nikola', 'aoxin')
+  ),
   name text not null,
   auth_user_id uuid not null unique references auth.users (id) on delete cascade,
   recipient_id uuid unique references public.participants (id),
@@ -76,12 +78,22 @@ select 'ernest', 'Ernest', id from auth.users where email = 'ernest@amigo-invisi
 union all
 select 'carla', 'Carla', id from auth.users where email = 'carla@amigo-invisible.test'
 union all
-select 'noe', 'Noe', id from auth.users where email = 'noe@amigo-invisible.test';
+select 'noe', 'Noe', id from auth.users where email = 'noe@amigo-invisible.test'
+union all
+select 'jonay', 'Jonay', id from auth.users where email = 'jonay@amigo-invisible.test'
+union all
+select 'oriol', 'Oriol', id from auth.users where email = 'oriol@amigo-invisible.test'
+union all
+select 'ivan', 'Ivan', id from auth.users where email = 'ivan@amigo-invisible.test'
+union all
+select 'nikola', 'Nikola', id from auth.users where email = 'nikola@amigo-invisible.test'
+union all
+select 'aoxin', 'Aoxin', id from auth.users where email = 'aoxin@amigo-invisible.test';
 
 do $$
 begin
-  if (select count(*) from public.participants) <> 4 then
-    raise exception 'Se necesitan exactamente los cuatro usuarios de Auth: Marc, Ernest, Carla y Noe.';
+  if (select count(*) from public.participants) <> 9 then
+    raise exception 'Se necesitan exactamente los nueve usuarios de Auth antes de hacer el sorteo.';
   end if;
 
   if exists (select 1 from public.participants where recipient_id is not null) then
