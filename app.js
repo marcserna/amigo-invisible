@@ -1,16 +1,50 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const participants = {
-  marc: "marc@amigo-invisible.test",
-  ernest: "ernest@amigo-invisible.test",
-  carla: "carla@amigo-invisible.test",
-  noe: "noe@amigo-invisible.test",
-  jonay: "jonay@amigo-invisible.test",
-  oriol: "oriol@amigo-invisible.test",
-  ivan: "ivan@amigo-invisible.test",
-  nikola: "nikola@amigo-invisible.test",
-  aoxin: "aoxin@amigo-invisible.test",
-  cai: "cai@amigo-invisible.test",
+const groups = {
+  friends: {
+    label: "Amigos",
+    emailDomain: "amigo-invisible.test",
+    drawFunction: "get_my_draw",
+    wishlistTable: "wishlist_items",
+    participants: [
+      ["marc", "Marc"],
+      ["ernest", "Ernest"],
+      ["carla", "Carla"],
+      ["noe", "Noe"],
+      ["jonay", "Jonay"],
+      ["oriol", "Oriol"],
+      ["ivan", "Ivan"],
+      ["nikola", "Nikola"],
+      ["aoxin", "Aoxin"],
+      ["cai", "Cai"],
+    ],
+    rules: [
+      "El regalo no debe superar los 15 €.",
+      "No se pueden regalar Funkos.",
+      "No se pueden regalar 30 grapadoras (una roja).",
+      "Mantenemos en secreto a quién nos ha tocado.",
+      "La lista de deseos sirve de inspiración.",
+    ],
+  },
+  family: {
+    label: "Familia",
+    emailDomain: "amigo-invisible.test",
+    drawFunction: "get_my_family_draw",
+    wishlistTable: "family_wishlist_items",
+    participants: [
+      ["marc", "Marc"],
+      ["andrea", "Andrea"],
+      ["elena", "Elena"],
+      ["iona", "Iona"],
+      ["eva", "Eva"],
+      ["ana", "Ana"],
+    ],
+    rules: [
+      "El regalo no puede superar los 20 €.",
+      "La lista de deseos sirve de inspiración.",
+      "Mantener en secreto lo que nos ha tocado.",
+    ],
+  },
 };
 
 const config = window.APP_CONFIG;
@@ -23,9 +57,50 @@ const ownListMessage = document.querySelector("#own-list-message");
 const recipientListMessage = document.querySelector("#recipient-list-message");
 const ownWishlist = document.querySelector("#own-wishlist");
 const recipientWishlist = document.querySelector("#recipient-wishlist");
+const participantSelect = document.querySelector("#participant");
+const groupSwitch = document.querySelector("#group-switch");
+const groupMessage = document.querySelector("#group-message");
 
 let supabase;
 let profile;
+let currentGroup = localStorage.getItem("draw-group") === "family" ? "family" : "friends";
+
+function renderGroup(groupName) {
+  currentGroup = groupName;
+  localStorage.setItem("draw-group", currentGroup);
+  const group = groups[currentGroup];
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Selecciona tu nombre";
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  participantSelect.replaceChildren(placeholder);
+
+  for (const [username, name] of group.participants) {
+    const option = document.createElement("option");
+    option.value = username;
+    option.textContent = name;
+    participantSelect.append(option);
+  }
+
+  groupSwitch.querySelectorAll("[data-group]").forEach((button) => {
+    const isActive = button.dataset.group === currentGroup;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+  document.querySelector("#edition").textContent = `SORTEO DE ${group.label.toUpperCase()}`;
+  document.querySelector("#welcome-eyebrow").lastChild.textContent =
+    ` UN SECRETO ENTRE ${group.label.toUpperCase()}`;
+
+  for (const listId of ["#public-rules-list", "#app-rules-list"]) {
+    const list = document.querySelector(listId);
+    list.replaceChildren(...group.rules.map((rule) => {
+      const item = document.createElement("li");
+      item.textContent = rule;
+      return item;
+    }));
+  }
+}
 
 function setMessage(element, text, isError = false) {
   element.textContent = text;
@@ -41,6 +116,35 @@ function showLogin() {
 function showApp() {
   loginView.classList.add("hidden");
   appView.classList.remove("hidden");
+}
+
+async function switchGroup(groupName) {
+  if (groupName === currentGroup) return;
+
+  const { data, error: sessionError } = await supabase?.auth.getSession() ?? {
+    data: { session: null },
+    error: null,
+  };
+  if (sessionError) {
+    setMessage(groupMessage, "No se pudo comprobar la sesión. Inténtalo de nuevo.", true);
+    console.error("Error al comprobar la sesión:", sessionError.message);
+    return;
+  }
+
+  if (data.session) {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      setMessage(groupMessage, "No se pudo cambiar de sorteo. Inténtalo de nuevo.", true);
+      console.error("Error al cambiar de sorteo:", error.message);
+      return;
+    }
+    showLogin();
+  }
+
+  loginForm.reset();
+  setMessage(loginMessage, "");
+  setMessage(groupMessage, "");
+  renderGroup(groupName);
 }
 
 function renderWishlist(list, items, canDelete, messageElement) {
@@ -78,8 +182,9 @@ function renderWishlist(list, items, canDelete, messageElement) {
 }
 
 async function loadWishlist(ownerId, list, canDelete, messageElement) {
+  const { wishlistTable } = groups[currentGroup];
   const { data, error } = await supabase
-    .from("wishlist_items")
+    .from(wishlistTable)
     .select("id, content, created_at")
     .eq("owner_id", ownerId)
     .order("created_at", { ascending: true });
@@ -95,7 +200,8 @@ async function loadWishlist(ownerId, list, canDelete, messageElement) {
 }
 
 async function loadProfile() {
-  const { data, error } = await supabase.rpc("get_my_draw");
+  const { drawFunction } = groups[currentGroup];
+  const { data, error } = await supabase.rpc(drawFunction);
   if (error) {
     setMessage(loginMessage, "No se pudo cargar tu sorteo. Contacta con quien organiza el grupo.", true);
     console.error("Error al cargar el sorteo:", error.message);
@@ -125,7 +231,8 @@ async function loadProfile() {
 }
 
 async function deleteWish(id, messageElement) {
-  const { error } = await supabase.from("wishlist_items").delete().eq("id", id);
+  const { wishlistTable } = groups[currentGroup];
+  const { error } = await supabase.from(wishlistTable).delete().eq("id", id);
   if (error) {
     setMessage(messageElement, "No se pudo quitar la idea. Inténtalo de nuevo.", true);
     console.error("Error al quitar una idea:", error.message);
@@ -144,6 +251,13 @@ function isConfigured() {
   );
 }
 
+renderGroup(currentGroup);
+
+groupSwitch.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-group]");
+  if (button) await switchGroup(button.dataset.group);
+});
+
 if (!isConfigured()) {
   loginForm.querySelector("button[type='submit']").disabled = true;
   setMessage(loginMessage, "Falta conectar Supabase. Sigue los pasos de configuración del proyecto.", true);
@@ -158,8 +272,9 @@ if (!isConfigured()) {
 
     const username = new FormData(loginForm).get("participant");
     const password = new FormData(loginForm).get("password");
+    const { emailDomain } = groups[currentGroup];
     const { error } = await supabase.auth.signInWithPassword({
-      email: participants[username],
+      email: `${username}@${emailDomain}`,
       password,
     });
 
@@ -185,8 +300,9 @@ if (!isConfigured()) {
 
     const button = wishlistForm.querySelector("button[type='submit']");
     button.disabled = true;
+    const { wishlistTable } = groups[currentGroup];
     const { error } = await supabase
-      .from("wishlist_items")
+      .from(wishlistTable)
       .insert({ owner_id: profile.my_id, content });
 
     if (error) {

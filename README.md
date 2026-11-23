@@ -1,6 +1,6 @@
 # Amigo invisible
 
-Web sencilla para Marc, Ernest, Carla, Noe, Jonay, Oriol, Ivan, Nikola, Aoxin y Cai. Se publica como sitio estático en GitHub Pages; Supabase gestiona las contraseñas y guarda el sorteo y las listas con acceso restringido.
+Web sencilla con dos sorteos independientes: Amigos y Familia. Se publica como sitio estático en GitHub Pages; Supabase gestiona las contraseñas y guarda cada sorteo y sus listas con acceso restringido.
 
 ## Preparación
 
@@ -47,6 +47,24 @@ Si en el futuro quieres volver a sortear a los diez sin modificar las cuentas ni
 
 Las reglas iniciales son: máximo 15 €, no regalar Funkos ni 30 grapadoras (una roja), mantener el sorteo en secreto y usar las listas de deseos como inspiración. El sorteo evita las parejas Marc-Carla, Ernest-Noe, Ivan-Nikola y Aoxin-Cai en ambos sentidos, y fija Marc → Noe.
 
+### Añadir el sorteo independiente de Familia
+
+1. En **Authentication → Users**, asegúrate de que existan las seis cuentas con Auto Confirm User. No crees una cuenta nueva para Marc: es la misma que ya usa para Amigos.
+
+   | Persona | Email de acceso |
+   | --- | --- |
+   | Marc | `marc@amigo-invisible.test` (cuenta existente) |
+   | Andrea | `andrea@amigo-invisible.test` |
+   | Elena | `elena@amigo-invisible.test` |
+   | Iona | `iona@amigo-invisible.test` |
+   | Eva | `eva@amigo-invisible.test` |
+   | Ana | `ana@amigo-invisible.test` |
+
+2. En **SQL Editor → New query**, ejecuta [`setup_familia.sql`](./setup_familia.sql) una sola vez. Crea tablas y permisos separados para Familia, y sortea a sus seis participantes sin cambiar asignaciones ni listas de Amigos.
+3. Comparte las contraseñas en privado. La web permite cambiar entre Amigos y Familia desde el mismo enlace; al cambiar de sorteo durante una sesión, pedirá iniciar sesión de nuevo.
+
+Las reglas de Familia son: máximo 20 €, la lista de deseos sirve de inspiración y se mantiene en secreto quién nos ha tocado. Para volver a sortear Familia hará falta preparar una migración específica; no ejecutes los scripts de Amigos sobre sus tablas.
+
 ### 3. Conectar la web
 
 1. En Supabase, abre **Project Settings → API**.
@@ -64,6 +82,7 @@ Las reglas iniciales son: máximo 15 €, no regalar Funkos ni 30 grapadoras (un
 
 - Cada persona elige su nombre, introduce su contraseña y ve a quién le ha tocado.
 - Cualquiera puede añadir o quitar sus propias ideas; la persona asignada podrá leerlas.
+- Los botones Amigos y Familia cambian el grupo usando el mismo enlace; las cuentas, asignaciones y listas de ambos sorteos son independientes, salvo Marc, que comparte cuenta.
 - La asignación no se puede cambiar desde la web.
 
 Las reglas y el diseño se pueden adaptar editando [`index.html`](./index.html) y [`styles.css`](./styles.css).

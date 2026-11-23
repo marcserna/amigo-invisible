@@ -22,15 +22,25 @@
           <span class="brand-mark" aria-hidden="true">✳</span>
           <span>amigo invisibol</span>
         </a>
-        <span class="edition">EDICIÓN EN FAMILIA</span>
+        <span id="edition" class="edition">SORTEO DE AMIGOS</span>
       </header>
+
+      <div id="group-switch" class="group-switch" role="group" aria-label="Elige el sorteo">
+        <button class="group-button is-active" type="button" data-group="friends" aria-pressed="true">
+          Amigos
+        </button>
+        <button class="group-button" type="button" data-group="family" aria-pressed="false">
+          Familia
+        </button>
+      </div>
+      <p id="group-message" class="group-message" role="status" aria-live="polite"></p>
 
       <section id="login-view" class="login-layout" aria-labelledby="welcome-title">
         <div class="welcome-copy">
-          <p class="eyebrow"><span class="eyebrow-dot"></span> UN SECRETO ENTRE AMIGOS</p>
+          <p id="welcome-eyebrow" class="eyebrow"><span class="eyebrow-dot"></span> UN SECRETO ENTRE AMIGOS</p>
           <h1 id="welcome-title">Es Navidad,<br /><em>toca darse regalos.</em></h1>
           <p class="intro">
-            Entra para descubrir a quién te toca y dejar algunas pistas para tu amigo invisible.
+            Entra para descubrir a quién te toca y dejar algunas pistas para tu persona secreta.
           </p>
           <div class="rule-note">
             <span class="note-icon" aria-hidden="true">✦</span>
@@ -47,16 +57,7 @@
           <div class="select-wrap">
             <select id="participant" name="participant" required>
               <option value="" selected disabled>Selecciona tu nombre</option>
-              <option value="marc">Marc</option>
-              <option value="ernest">Ernest</option>
-              <option value="carla">Carla</option>
-              <option value="noe">Noe</option>
-              <option value="jonay">Jonay</option>
-              <option value="oriol">Oriol</option>
-              <option value="ivan">Ivan</option>
-              <option value="nikola">Nikola</option>
-              <option value="aoxin">Aoxin</option>
-              <option value="cai">Cai</option>
+              <option value="" selected disabled>Selecciona tu nombre</option>
             </select>
             <span class="select-arrow" aria-hidden="true">⌄</span>
           </div>
@@ -80,13 +81,7 @@
       <section class="public-rules card" aria-labelledby="public-rules-title">
         <p class="card-kicker">PARA QUE TODO SALGA BIEN</p>
         <h2 id="public-rules-title">Las reglas del regalo</h2>
-        <ul class="rules-list">
-          <li>El regalo no debe superar los 15 €.</li>
-          <li>No se pueden regalar Funkos.</li>
-          <li>No se pueden regalar 30 grapadoras (una roja).</li>
-          <li>Mantenemos en secreto a quién nos ha tocado.</li>
-          <li>La lista de deseos sirve de inspiración.</li>
-        </ul>
+        <ul id="public-rules-list" class="rules-list"></ul>
       </section>
 
       <section id="app-view" class="app-view hidden" aria-labelledby="app-title">
@@ -102,7 +97,7 @@
             <div class="draw-sparkle" aria-hidden="true">✳</div>
             <p class="card-kicker">TU PERSONA SECRETA</p>
             <h2 id="recipient-name">Cargando…</h2>
-            <p>Este es tu amigo invisible. ¡Guárdate el secreto!</p>
+            <p>Esta es tu persona secreta. ¡Guárdate el secreto!</p>
             <div class="secret-stamp" aria-hidden="true">SHHH<br />ES UN<br />SECRETO</div>
           </article>
 
@@ -114,7 +109,7 @@
               </div>
               <span class="list-icon" aria-hidden="true">♡</span>
             </div>
-            <p class="card-description">Añade ideas para que tu amigo invisible pueda conocerte un poquito mejor.</p>
+            <p class="card-description">Añade ideas para que tu persona secreta pueda conocerte un poquito mejor.</p>
             <form id="wishlist-form" class="wishlist-form">
               <label class="sr-only" for="wishlist-input">Añadir un deseo</label>
               <input
@@ -147,13 +142,7 @@
 
         <details class="rules-dropdown">
           <summary><span aria-hidden="true">✦</span> Las reglas del regalo</summary>
-          <ul class="rules-list">
-            <li>El regalo no debe superar los 15 €.</li>
-            <li>No se pueden regalar Funkos.</li>
-            <li>No se pueden regalar 30 grapadoras (una roja).</li>
-            <li>Mantenemos en secreto a quién nos ha tocado.</li>
-            <li>La lista de deseos sirve de inspiración.</li>
-          </ul>
+          <ul id="app-rules-list" class="rules-list"></ul>
         </details>
       </section>
 
